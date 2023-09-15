@@ -64,7 +64,7 @@ $$P(abc) =  N\cdot (1 - x - y + xy)/2 $$
 Now to code this up in R.
 ```{r}
 
-calculateProgeny <- function(myX = 10, myY = 20, myN = 1000){
+calculateProgeny <- function(myX = 10, myY = 20, myN = 1000, myLoci = c('A','B','C','a','b','c')){
 myx = myX/100
 myy = myY/100
 
@@ -73,12 +73,23 @@ myABRecombinants = myN * (myx - myx*myy)
 myBCRecombinants = myN * (myy - myx*myy)
 myNonrecombinants = myN* (1 - myx - myy + myx*myy)
 
-myNumbers =c( myNonrecombinants/2, myNonrecombinants/2, 
-              myABRecombinants/2, myABRecombinants/2, 
-              myBCRecombinants/2, myBCRecombinants/2,
-              myDoubleCrossovers/2, myDoubleCrossovers/2)
+#myNumbers =c( myNonrecombinants/2, myNonrecombinants/2, 
+#              myABRecombinants/2, myABRecombinants/2, 
+#              myBCRecombinants/2, myBCRecombinants/2,
+#              myDoubleCrossovers/2, myDoubleCrossovers/2)
 
-myProgeny = c('ABC','abc','aBC','Abc','abC','ABc','aBc','AbC')
+#myProgeny = c('ABC','abc','aBC','Abc','abC','ABc','aBc','AbC')
+myAs = c(myLoci[1],myLoci[4])
+myBs = c(myLoci[2],myLoci[5])
+myCs = c(myLoci[3],myLoci[6])
+myProgeny = c()
+for (x in myAs){for (y in myBs){for (z in myCs){myProgeny = c(myProgeny,(paste(x,y,z, sep=" ")))}}}
+
+myNumbers =c( myNonrecombinants/2, myBCRecombinants/2, 
+              myDoubleCrossovers/2, myABRecombinants/2, 
+              myABRecombinants/2, myDoubleCrossovers/2,
+              myBCRecombinants/2, myNonrecombinants/2)
+
 myOutput = data.frame(progeny = myProgeny, numbers = myNumbers, stringsAsFactors = F)
 
 library(knitr)
@@ -103,6 +114,8 @@ calculateProgeny(myX=15, myY=20, myN = 800)
 linkageMap(myX = 25, myY = 7)
 calculateProgeny(myX=25, myY=7, myN = 800)
 
+linkageMap(myX = 20, myY=12, geneNames = c('e','ro','bv'))
+calculateProgeny(myX=20, myY = 12, myN = 1800, myLoci = c('+','+','+','e','ro','bv'))
 
 ```
 

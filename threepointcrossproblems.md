@@ -64,7 +64,7 @@ $$P(abc) =  N\cdot (1 - x - y + xy)/2 $$
 Now to code this up in R.
 
 ```r
-calculateProgeny <- function(myX = 10, myY = 20, myN = 1000){
+calculateProgeny <- function(myX = 10, myY = 20, myN = 1000, myLoci = c('A','B','C','a','b','c')){
 myx = myX/100
 myy = myY/100
 
@@ -73,12 +73,23 @@ myABRecombinants = myN * (myx - myx*myy)
 myBCRecombinants = myN * (myy - myx*myy)
 myNonrecombinants = myN* (1 - myx - myy + myx*myy)
 
-myNumbers =c( myNonrecombinants/2, myNonrecombinants/2, 
-              myABRecombinants/2, myABRecombinants/2, 
-              myBCRecombinants/2, myBCRecombinants/2,
-              myDoubleCrossovers/2, myDoubleCrossovers/2)
+#myNumbers =c( myNonrecombinants/2, myNonrecombinants/2, 
+#              myABRecombinants/2, myABRecombinants/2, 
+#              myBCRecombinants/2, myBCRecombinants/2,
+#              myDoubleCrossovers/2, myDoubleCrossovers/2)
 
-myProgeny = c('ABC','abc','aBC','Abc','abC','ABc','aBc','AbC')
+#myProgeny = c('ABC','abc','aBC','Abc','abC','ABc','aBc','AbC')
+myAs = c(myLoci[1],myLoci[4])
+myBs = c(myLoci[2],myLoci[5])
+myCs = c(myLoci[3],myLoci[6])
+myProgeny = c()
+for (x in myAs){for (y in myBs){for (z in myCs){myProgeny = c(myProgeny,(paste(x,y,z, sep=" ")))}}}
+
+myNumbers =c( myNonrecombinants/2, myBCRecombinants/2, 
+              myDoubleCrossovers/2, myABRecombinants/2, 
+              myABRecombinants/2, myDoubleCrossovers/2,
+              myBCRecombinants/2, myNonrecombinants/2)
+
 myOutput = data.frame(progeny = myProgeny, numbers = myNumbers, stringsAsFactors = F)
 
 library(knitr)
@@ -105,14 +116,14 @@ calculateProgeny(myX=5, myY=4, myN = 500)
 
 |progeny | numbers|
 |:-------|-------:|
-|ABC     |   228.0|
-|abc     |   228.0|
-|aBC     |    12.0|
-|Abc     |    12.0|
-|abC     |     9.5|
-|ABc     |     9.5|
-|aBc     |     0.5|
-|AbC     |     0.5|
+|A B C   |   228.0|
+|A B c   |     9.5|
+|A b C   |     0.5|
+|A b c   |    12.0|
+|a B C   |    12.0|
+|a B c   |     0.5|
+|a b C   |     9.5|
+|a b c   |   228.0|
 
 ```r
 linkageMap(myX = 15, myY = 20)
@@ -128,14 +139,14 @@ calculateProgeny(myX=15, myY=20, myN = 800)
 
 |progeny | numbers|
 |:-------|-------:|
-|ABC     |     272|
-|abc     |     272|
-|aBC     |      48|
-|Abc     |      48|
-|abC     |      68|
-|ABc     |      68|
-|aBc     |      12|
-|AbC     |      12|
+|A B C   |     272|
+|A B c   |      68|
+|A b C   |      12|
+|A b c   |      48|
+|a B C   |      48|
+|a B c   |      12|
+|a b C   |      68|
+|a b c   |     272|
 
 ```r
 linkageMap(myX = 25, myY = 7)
@@ -151,12 +162,35 @@ calculateProgeny(myX=25, myY=7, myN = 800)
 
 |progeny | numbers|
 |:-------|-------:|
-|ABC     |     279|
-|abc     |     279|
-|aBC     |      93|
-|Abc     |      93|
-|abC     |      21|
-|ABc     |      21|
-|aBc     |       7|
-|AbC     |       7|
+|A B C   |     279|
+|A B c   |      21|
+|A b C   |       7|
+|A b c   |      93|
+|a B C   |      93|
+|a B c   |       7|
+|a b C   |      21|
+|a b c   |     279|
+
+```r
+linkageMap(myX = 20, myY=12, geneNames = c('e','ro','bv'))
+```
+
+![](threepointcrossproblems_files/figure-html/unnamed-chunk-2-4.png)<!-- -->
+
+```r
+calculateProgeny(myX=20, myY = 12, myN = 1800, myLoci = c('+','+','+','e','ro','bv'))
+```
+
+
+
+|progeny | numbers|
+|:-------|-------:|
+|+ + +   |   633.6|
+|+ + bv  |    86.4|
+|+ ro +  |    21.6|
+|+ ro bv |   158.4|
+|e + +   |   158.4|
+|e + bv  |    21.6|
+|e ro +  |    86.4|
+|e ro bv |   633.6|
 
